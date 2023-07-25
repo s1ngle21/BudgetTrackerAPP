@@ -5,6 +5,9 @@ import budgettrackerapp.dto.ExpenditureDTO;
 import budgettrackerapp.entity.Category;
 import budgettrackerapp.entity.Expenditure;
 import budgettrackerapp.entity.User;
+import budgettrackerapp.exeptions.CategoryDoesNotExistException;
+import budgettrackerapp.mapper.CategoryMapper;
+import budgettrackerapp.mapper.ExpenditureMapper;
 import budgettrackerapp.repository.category.CategoryRepository;
 import budgettrackerapp.repository.user.UserRepository;
 import budgettrackerapp.service.user.UserService;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,18 +27,19 @@ import java.util.stream.Collectors;
 public class SimpleCategoryService implements CategoryService {
 
     private CategoryRepository categoryRepository;
-
     private UserService userService;
+    private CategoryMapper categoryMapper;
 
     @Override
     public CategoryDTO create(Category category, Long userId) {
+        Objects.requireNonNull(category);
         User user = userService.findById(userId);
         category.setUser(user);
         category.setAmount(BigDecimal.ZERO);
 
         Category savedCategory = categoryRepository.save(category);
 
-        return mapToCategoryDTO(savedCategory);
+        return categoryMapper.mapToDto(savedCategory);
     }
 
     @Override
@@ -46,53 +51,29 @@ public class SimpleCategoryService implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public CategoryDTO getById(Long id) {
-        return mapToCategoryDTO(categoryRepository.findById(id).get());
+        Objects.requireNonNull(id, "Id must be provided for this operation!");
+        CategoryDTO categoryDto = categoryMapper.mapToDto(categoryRepository.findById(id).get());
+        if (categoryDto == null) {
+            throw new CategoryDoesNotExistException("Category does not exist");
+        }
+        return categoryDto;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CategoryDTO> getAll() {
         List<Category> categories = categoryRepository.findAll();
-        return categories
-                .stream()
-                .map(this::mapToCategoryDTO)
-                .collect(Collectors.toList());
+        if (categories == null || categories.size() == 0) {
+            throw new CategoryDoesNotExistException("Category does not exist");
+        }
+        return categoryMapper.mapToDto(categories);
 
     }
 
     @Override
     public void delete(Long id) {
+        Objects.requireNonNull(id, "Id must be provided for this operation!");
         categoryRepository.deleteById(id);
-    }
-
-    private CategoryDTO mapToCategoryDTO(Category category) {
-        CategoryDTO categoryDto = new CategoryDTO();
-        categoryDto.setId(category.getId());
-        categoryDto.setName(category.getName());
-        categoryDto.setUserId(category.getUser().getId());
-        categoryDto.setAmount(category.getAmount());
-        categoryDto.setExpenditures(mapExpendituresToDto(category.getExpenditures()));
-        return categoryDto;
-    }
-
-    private List<ExpenditureDTO> mapExpendituresToDto(List<Expenditure> expenditures) {
-        if (expenditures == null) {
-            return new ArrayList<>();
-        }
-        return expenditures
-                .stream()
-                .map(this::mapExpenditureToDto)
-                .collect(Collectors.toList());
-
-    }
-
-    private ExpenditureDTO mapExpenditureToDto(Expenditure expenditure) {
-        ExpenditureDTO expenditureDto = new ExpenditureDTO();
-        expenditureDto.setId(expenditure.getId());
-        expenditureDto.setCreatedAt(expenditure.getCreatedAt());
-        expenditureDto.setComment(expenditure.getComment());
-        expenditureDto.setAmount(expenditure.getAmount());
-        return expenditureDto;
     }
 
 }

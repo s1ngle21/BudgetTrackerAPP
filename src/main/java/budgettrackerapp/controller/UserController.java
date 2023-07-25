@@ -2,7 +2,6 @@ package budgettrackerapp.controller;
 
 import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

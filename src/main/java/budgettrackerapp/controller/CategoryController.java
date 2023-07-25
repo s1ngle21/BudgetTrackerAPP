@@ -11,16 +11,16 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/categories")
 public class CategoryController {
 
     private CategoryService categoryService;
 
-    @PostMapping("/users/{userId}/categories")
+    @PostMapping("/users/{userId}")
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody Category category, @PathVariable Long userId) {
         return ResponseEntity
                 .ok(categoryService.create(category, userId));
     }
-
     @GetMapping("/categories/{id}")
     public ResponseEntity<CategoryDTO> getById(@PathVariable Long id) {
         return ResponseEntity
