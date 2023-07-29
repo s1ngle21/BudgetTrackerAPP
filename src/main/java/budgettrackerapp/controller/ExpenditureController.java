@@ -8,28 +8,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/expenditures")
 @AllArgsConstructor
 public class ExpenditureController {
 
     private ExpenditureService expenditureService;
 
-    @PostMapping("categories/{categoryId}/expenditures")
-    public ResponseEntity<ExpenditureDTO> create(@RequestBody Expenditure expenditure, @PathVariable Long categoryId) {
+    @PostMapping("users/{userId}/categories/{categoryId}")
+    public ResponseEntity<ExpenditureDTO> create(@RequestBody ExpenditureDTO expenditureDto,
+                                                 @PathVariable Long userId,
+                                                 @PathVariable Long categoryId) {
         return ResponseEntity
-                .ok(expenditureService.createAndAddToCategory(expenditure, categoryId));
+                .ok(expenditureService.createAndAddToCategory(expenditureDto, categoryId, userId));
     }
 
-    @DeleteMapping("categories/{categoryId}/expenditures/{expenditureId}")
-    public ResponseEntity<String> delete(@PathVariable Long categoryId, @PathVariable Long expenditureId) {
-        expenditureService.delete(categoryId, expenditureId);
+    @DeleteMapping("{expenditureId}/users/{userId}/categories/{categoryId}")
+    public ResponseEntity<String> delete(@PathVariable Long categoryId,
+                                         @PathVariable Long expenditureId,
+                                         @PathVariable Long userId) {
+        expenditureService.delete(categoryId, expenditureId, userId);
         return ResponseEntity
                 .ok("Expenditure has been deleted");
     }
 
-    @PostMapping("categories/{categoryId}/expenditures/{expenditureId}")
-    public ResponseEntity<String> moveToAnotherCategory(@PathVariable Long categoryId, @PathVariable Long expenditureId) {
-        expenditureService.moveToAnotherCategory(expenditureId, categoryId);
+    @PostMapping("{expenditureId}/users/{userId}/categories/{categoryDestinationId}")
+    public ResponseEntity<String> moveToAnotherCategory(@PathVariable Long categoryDestinationId,
+                                                        @PathVariable Long expenditureId,
+                                                        @PathVariable Long userId) {
+        expenditureService.moveToAnotherCategory(expenditureId, categoryDestinationId, userId);
         return ResponseEntity
                 .ok("Expenditure has been moved to another category");
     }

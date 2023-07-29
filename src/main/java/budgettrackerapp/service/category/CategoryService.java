@@ -1,21 +1,23 @@
 package budgettrackerapp.service.category;
 
 import budgettrackerapp.dto.CategoryDTO;
-import budgettrackerapp.entity.Category;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.Month;
 
 
 public interface CategoryService {
 
-    CategoryDTO create(Category category, Long userId);
+    CategoryDTO create(CategoryDTO categoryDto, Long userId);
 
-    CategoryDTO getById(Long id);
+    CategoryDTO getById(Long id, Long userId);
 
-    void updateBalance(BigDecimal amount, Category category);
+    void updateBalance(BigDecimal amount, CategoryDTO categoryDto);
 
-    List<CategoryDTO> getAll();
+    Page<CategoryDTO> getAll(Long userId, int pageNumber, int pageSize);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
+
+    CategoryDTO getById(Long categoryId, Long userId, int year, Month month);
 }

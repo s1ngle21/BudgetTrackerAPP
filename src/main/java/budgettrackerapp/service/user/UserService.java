@@ -1,15 +1,16 @@
 package budgettrackerapp.service.user;
 
 
-import budgettrackerapp.entity.User;
-
-import java.math.BigDecimal;
+import budgettrackerapp.dto.BalanceDTO;
+import budgettrackerapp.dto.UserDTO;
+import budgettrackerapp.dto.UserINFO;
 
 
 public interface UserService {
-    User findById(Long id);
+    UserDTO findById(Long id);
 
-    User save(User user);
+    UserINFO findUserInfoById(Long id);
 
-    void setBalance(Long id, BigDecimal amount);
+    void setBalance(BalanceDTO balanceDto, Long userId);
+
 }

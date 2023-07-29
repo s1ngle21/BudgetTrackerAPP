@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
@@ -32,6 +33,14 @@ public class CustomExceptionHandler {
     public ErrorResponse handleCategoryDoesNotExistException(CategoryDoesNotExistException e) {
         LOGGER.error(e.getMessage(), e);
         return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        LOGGER.error(e.getMessage(), e);
+        return new ErrorResponse("Can not find parameter to execute this method", HttpStatus.BAD_REQUEST.value());
     }
 
 }

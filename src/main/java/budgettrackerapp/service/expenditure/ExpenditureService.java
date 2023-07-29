@@ -5,9 +5,9 @@ import budgettrackerapp.entity.Expenditure;
 
 public interface ExpenditureService {
 
-    ExpenditureDTO createAndAddToCategory(Expenditure expenditure, Long categoryId);
+    ExpenditureDTO createAndAddToCategory(ExpenditureDTO expenditureDto, Long categoryId, Long userId);
 
-    void delete(Long expenditureId, Long categoryId);
+    void delete(Long categoryId, Long expenditureId, Long userId);
 
-    void moveToAnotherCategory(Long expenditureId, Long categoryId);
+    void moveToAnotherCategory(Long expenditureId, Long categoryId, Long userId);
 }

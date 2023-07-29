@@ -1,11 +1,12 @@
 package budgettrackerapp.controller;
 
+import budgettrackerapp.dto.BalanceDTO;
+import budgettrackerapp.dto.UserINFO;
 import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/users")
@@ -14,10 +15,17 @@ public class UserController {
 
     private UserService userService;
 
-    @GetMapping("/{userId}/balance")
-    public ResponseEntity<String> setBalance(@PathVariable Long userId, @RequestParam (required = false)BigDecimal amount) {
-        userService.setBalance(userId, amount);
+    @PostMapping("/{userId}")
+    public ResponseEntity<String> setBalance(@RequestBody BalanceDTO balanceDto,
+                                             @PathVariable Long userId) {
+        userService.setBalance(balanceDto, userId);
         return ResponseEntity
                 .ok("Balance has been updated");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserINFO> getUser(@PathVariable Long id) {
+        return ResponseEntity
+                .ok(userService.findUserInfoById(id));
     }
 }

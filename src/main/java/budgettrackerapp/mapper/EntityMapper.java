@@ -4,11 +4,11 @@ package budgettrackerapp.mapper;
 
 import java.util.List;
 
-public interface EntityMapper<ENTITY, ENTITY_DTO> {
+public interface EntityMapper<ENTITY, DTO> {
 
-    ENTITY_DTO mapToDto(ENTITY entity);
+    DTO mapToDto(ENTITY entity);
 
-    ENTITY mapToEntity(ENTITY_DTO entityDto);
+    ENTITY mapToEntity(DTO entityDto);
 
-    List<ENTITY_DTO> mapToDto(List<ENTITY> entities);
+    List<DTO> mapToDto(List<ENTITY> entities);
 }

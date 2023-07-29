@@ -1,5 +1,6 @@
 package budgettrackerapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,19 +20,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "email")
     private String email;
 
+
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "balance")
     private BigDecimal balance;
 
     @OneToMany(mappedBy = "user")
     private List<Category> categories;
-
-
-    public void subtractFromBalance(BigDecimal amount) {
-        this.balance = this.balance.subtract(amount);
-    }
-
 
 }

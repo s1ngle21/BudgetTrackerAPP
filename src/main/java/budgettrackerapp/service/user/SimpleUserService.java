@@ -1,49 +1,61 @@
 package budgettrackerapp.service.user;
 
+import budgettrackerapp.dto.BalanceDTO;
+import budgettrackerapp.dto.UserDTO;
+import budgettrackerapp.dto.UserINFO;
 import budgettrackerapp.entity.User;
 import budgettrackerapp.exeptions.UserDoesNotExistException;
+import budgettrackerapp.mapper.UserInfoMapper;
+import budgettrackerapp.mapper.UserMapper;
 import budgettrackerapp.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+
 import java.util.Objects;
 
 
 @Service
 @Transactional
 @AllArgsConstructor
-public class SimpleUserService implements UserService{
+public class SimpleUserService implements UserService {
 
     private UserRepository userRepository;
+    private UserInfoMapper userInfoMapper;
+    private UserMapper userMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public User findById(Long id) {
+    public UserINFO findUserInfoById(Long id) {
         Objects.requireNonNull(id, "Id must be provided for this operation!");
-        User user = userRepository.findById(id).get();
-        if (user == null) {
+        UserINFO userInfo = userInfoMapper.mapToDto(userRepository.findById(id).get());
+        if (userInfo == null) {
             throw new UserDoesNotExistException("Can not find user");
         }
-        return user;
-    }
-
-    public User save(User user) {
-        Objects.requireNonNull(user);
-        return userRepository.save(user);
+        return userInfo;
     }
 
     @Override
-    public void setBalance(Long id, BigDecimal amount) {
+    @Transactional(readOnly = true)
+    public UserDTO findById(Long id) {
         Objects.requireNonNull(id, "Id must be provided for this operation!");
-        Objects.requireNonNull(amount, "Please enter amount");
-        User user = findById(id);
+        UserDTO userDto = userMapper.mapToDto(userRepository.findById(id).get());
+        if (userDto == null) {
+            throw new UserDoesNotExistException("Can not find user");
+        }
+        return userDto;
+    }
+
+    @Override
+    public void setBalance(BalanceDTO balanceDto, Long userId) {
+        Objects.requireNonNull(balanceDto, "Amount must be provided for this operation");
+        User user = userRepository.findById(userId).get();
         if (user == null) {
             throw new UserDoesNotExistException("Can not find user");
         }
-        user.setBalance(amount);
-        save(user);
+        user.setBalance(balanceDto.getAmount());
+        userRepository.save(user);
     }
 
 }

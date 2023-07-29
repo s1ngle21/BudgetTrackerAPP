@@ -3,6 +3,7 @@ package budgettrackerapp.mapper;
 import budgettrackerapp.dto.CategoryDTO;
 import budgettrackerapp.entity.Category;
 import budgettrackerapp.entity.User;
+import budgettrackerapp.repository.user.UserRepository;
 import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class CategoryMapper implements EntityMapper<Category, CategoryDTO> {
 
     private ExpenditureMapper expenditureMapper;
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public CategoryDTO mapToDto(Category category) {
@@ -34,7 +35,8 @@ public class CategoryMapper implements EntityMapper<Category, CategoryDTO> {
         Category category = new Category();
         category.setId(categoryDto.getId());
         category.setName(categoryDto.getName());
-        User user = userService.findById(categoryDto.getUserId());
+        category.setAmount(categoryDto.getAmount());
+        User user = userRepository.findById(categoryDto.getUserId()).get();
         category.setUser(user);
         return category;
     }

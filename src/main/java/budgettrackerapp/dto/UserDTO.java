@@ -1,6 +1,6 @@
 package budgettrackerapp.dto;
 
-import budgettrackerapp.entity.Category;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,5 +17,5 @@ public class UserDTO {
     private String email;
     private String password;
     private BigDecimal balance;
-    private List<Category> categories;
+    private List<CategoryDTO> categories;
 }
