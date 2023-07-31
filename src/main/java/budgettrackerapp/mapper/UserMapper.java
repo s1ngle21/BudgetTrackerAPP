@@ -23,6 +23,7 @@ public class UserMapper implements EntityMapper<User, UserDTO> {
         userDto.setBalance(user.getBalance());
         userDto.setPassword(user.getPassword());
         userDto.setCategories(categoryMapper.mapToDto(user.getCategories()));
+        userDto.setRoles(user.getRoles());
         return userDto;
     }
 
