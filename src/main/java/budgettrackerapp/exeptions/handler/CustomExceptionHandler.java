@@ -1,9 +1,6 @@
 package budgettrackerapp.exeptions.handler;
 
-import budgettrackerapp.exeptions.CategoryDoesNotExistException;
-import budgettrackerapp.exeptions.ExpenditureInSpecificCategoryDoesNotExistException;
-import budgettrackerapp.exeptions.PasswordsDoesNotMatchException;
-import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
+import budgettrackerapp.exeptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

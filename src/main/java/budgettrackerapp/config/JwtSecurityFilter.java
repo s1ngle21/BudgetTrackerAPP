@@ -40,7 +40,7 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 log.debug("Expired token lifetime!");
             } catch (SignatureException e) {
-                log.debug("Wrong token signature");
+                log.debug("Wrong token signature!");
             }
         }
 
