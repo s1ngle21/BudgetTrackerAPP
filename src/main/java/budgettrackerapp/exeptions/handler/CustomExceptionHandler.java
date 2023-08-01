@@ -2,9 +2,12 @@ package budgettrackerapp.exeptions.handler;
 
 import budgettrackerapp.exeptions.CategoryDoesNotExistException;
 import budgettrackerapp.exeptions.ExpenditureInSpecificCategoryDoesNotExistException;
+import budgettrackerapp.exeptions.PasswordsDoesNotMatchException;
+import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,6 +44,27 @@ public class CustomExceptionHandler {
     public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         LOGGER.error(e.getMessage(), e);
         return new ErrorResponse("Can not find parameter to execute this method", HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(PasswordsDoesNotMatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlePasswordsDoesNotMatchException( PasswordsDoesNotMatchException e) {
+        LOGGER.error(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(UserWithCurrentNameAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUserWithCurrentNameAlreadyExistException(UserWithCurrentNameAlreadyExistException e) {
+        LOGGER.error(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadCredentialsException(BadCredentialsException e) {
+        LOGGER.error("Wrong username or password", e);
+        return new ErrorResponse("Wrong username or password", HttpStatus.BAD_REQUEST.value());
     }
 
 }
