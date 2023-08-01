@@ -63,8 +63,8 @@ public class CustomExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadCredentialsException(BadCredentialsException e) {
-        LOGGER.error("Wrong username or password", e);
-        return new ErrorResponse("Wrong username or password", HttpStatus.BAD_REQUEST.value());
+        LOGGER.error(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
 }

@@ -31,6 +31,7 @@ public class SimpleAuthorizationService implements AuthorizationService {
            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                    registrationRequest.getUsername(), registrationRequest.getPassword()));
         } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Wrong username or password");
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(registrationRequest.getUsername());
         String token = jwtTokenUtils.generateToken(userDetails);
