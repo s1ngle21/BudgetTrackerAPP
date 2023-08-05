@@ -1,5 +1,6 @@
 package budgettrackerapp.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
@@ -19,4 +20,11 @@ public class CategoryDTO {
     private BigDecimal amount;
     private List<ExpenditureDTO> expenditures = new ArrayList<>();
     private Long userId;
+
+    public CategoryDTO(String name, Long userId) {
+        this.name = name;
+        this.userId = userId;
+    }
+
+
 }

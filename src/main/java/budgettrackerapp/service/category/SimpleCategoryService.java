@@ -31,9 +31,7 @@ import java.util.stream.Collectors;
 public class SimpleCategoryService implements CategoryService {
 
     private CategoryRepository categoryRepository;
-//    private UserService userService;
     private CategoryMapper categoryMapper;
-    private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Override
