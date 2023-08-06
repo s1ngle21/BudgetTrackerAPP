@@ -2,6 +2,7 @@ package budgettrackerapp.service.authorization;
 
 import budgettrackerapp.dto.*;
 import budgettrackerapp.exeptions.PasswordsDoesNotMatchException;
+import budgettrackerapp.exeptions.RegistrationException;
 import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
 import budgettrackerapp.service.user.UserDetailsServiceImpl;
 import budgettrackerapp.service.user.UserService;
@@ -13,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -43,7 +46,12 @@ public class SimpleAuthorizationService implements AuthorizationService {
         if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
             throw new PasswordsDoesNotMatchException("Passwords does not match!");
         }
-
+        if (registrationUserDto.getUsername().isEmpty()) {
+            throw new RegistrationException("Username field can not be empty!");
+        }
+        if (registrationUserDto.getPassword().isEmpty()) {
+            throw new RegistrationException("Password field can not be empty!");
+        }
         if (userService.findByName(registrationUserDto.getUsername()) != null) {
             throw new UserWithCurrentNameAlreadyExistException("User with current username already exist!");
         }
