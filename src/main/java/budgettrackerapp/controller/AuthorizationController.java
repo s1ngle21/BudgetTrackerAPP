@@ -4,7 +4,7 @@ import budgettrackerapp.dto.AuthorizationRequest;
 import budgettrackerapp.dto.RegistrationResponse;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.TokenResponse;
-import budgettrackerapp.service.authorization.SimpleAuthorizationService;
+import budgettrackerapp.service.authorization.AuthorizationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class AuthorizationController {
-    private SimpleAuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
     @PostMapping("/authorization")
     public ResponseEntity<TokenResponse> getAuthToken(@RequestBody AuthorizationRequest registrationRequest) {
