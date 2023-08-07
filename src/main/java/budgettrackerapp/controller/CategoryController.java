@@ -22,7 +22,7 @@ public class CategoryController {
                 .ok(categoryService.create(categoryDto, userId));
     }
 
-    @GetMapping("users/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<Page<CategoryDTO>> getAll(@PathVariable Long userId,
                                                     @RequestParam(defaultValue = "0") int pageNumber,
                                                     @RequestParam(defaultValue = "10") int pageSize) {
