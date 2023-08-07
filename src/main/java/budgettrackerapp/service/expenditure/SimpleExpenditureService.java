@@ -33,8 +33,9 @@ public class SimpleExpenditureService implements ExpenditureService {
 
     @Override
     public ExpenditureDTO createAndAddToCategory(ExpenditureDTO expenditureDto, Long categoryId, Long userId) {
-        Objects.requireNonNull(expenditureDto, "Please, provide name and amount for your expenditure!");
-        Objects.requireNonNull(expenditureDto, "Id must be provided for this operation!");
+        Objects.requireNonNull(expenditureDto.getAmount(), "Please, amount for your expenditure!");
+        Objects.requireNonNull(categoryId, "Id must be provided for this operation!");
+        Objects.requireNonNull(userId, "Id must be provided for this operation!");
         CategoryDTO categoryDto = categoryService.getById(categoryId, userId);
         User user = userRepository.findById(categoryDto.getUserId()).get();
         Expenditure expenditure = expenditureMapper.mapToEntity(expenditureDto);

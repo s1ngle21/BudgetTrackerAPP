@@ -5,7 +5,6 @@ import budgettrackerapp.dto.AuthorizationRequest;
 import budgettrackerapp.dto.RegistrationResponse;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.TokenResponse;
-import budgettrackerapp.exeptions.RegistrationException;
 import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
 import budgettrackerapp.service.authorization.SimpleAuthorizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,11 +29,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthorizationControllerIntegrationTests {
+public class AuthorizationControllerIntegrationTest {
 
     @Mock
     private SimpleAuthorizationService authorizationService;

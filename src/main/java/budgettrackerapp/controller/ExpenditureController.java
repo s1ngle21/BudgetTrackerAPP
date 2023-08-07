@@ -14,7 +14,7 @@ public class ExpenditureController {
 
     private ExpenditureService expenditureService;
 
-    @PostMapping("users/{userId}/categories/{categoryId}")
+    @PostMapping("/users/{userId}/categories/{categoryId}")
     public ResponseEntity<ExpenditureDTO> create(@RequestBody ExpenditureDTO expenditureDto,
                                                  @PathVariable Long userId,
                                                  @PathVariable Long categoryId) {
@@ -22,7 +22,7 @@ public class ExpenditureController {
                 .ok(expenditureService.createAndAddToCategory(expenditureDto, categoryId, userId));
     }
 
-    @DeleteMapping("{expenditureId}/users/{userId}/categories/{categoryId}")
+    @DeleteMapping("/{expenditureId}/users/{userId}/categories/{categoryId}")
     public ResponseEntity<String> delete(@PathVariable Long categoryId,
                                          @PathVariable Long expenditureId,
                                          @PathVariable Long userId) {
@@ -31,7 +31,7 @@ public class ExpenditureController {
                 .ok("Expenditure has been deleted");
     }
 
-    @PostMapping("{expenditureId}/users/{userId}/categories/{categoryDestinationId}")
+    @PostMapping("/{expenditureId}/users/{userId}/categories/{categoryDestinationId}")
     public ResponseEntity<String> moveToAnotherCategory(@PathVariable Long categoryDestinationId,
                                                         @PathVariable Long expenditureId,
                                                         @PathVariable Long userId) {
