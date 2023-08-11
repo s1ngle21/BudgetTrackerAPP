@@ -1,7 +1,7 @@
 package budgettrackerapp.controller;
 
 import budgettrackerapp.dto.BalanceDTO;
-import budgettrackerapp.dto.UserINFO;
+import budgettrackerapp.dto.UserInfoDTO;
 import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserINFO> getUser(@PathVariable Long id) {
+    public ResponseEntity<UserInfoDTO> getUser(@PathVariable Long id) {
         return ResponseEntity
                 .ok(userService.findUserInfoById(id));
     }

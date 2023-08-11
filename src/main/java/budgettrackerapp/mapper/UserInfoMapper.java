@@ -1,6 +1,6 @@
 package budgettrackerapp.mapper;
 
-import budgettrackerapp.dto.UserINFO;
+import budgettrackerapp.dto.UserInfoDTO;
 import budgettrackerapp.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class UserInfoMapper implements EntityMapper<User, UserINFO>{
+public class UserInfoMapper implements EntityMapper<User, UserInfoDTO>{
     private CategoryMapper categoryMapper;
     @Override
-    public UserINFO mapToDto(User user) {
-        UserINFO userInfo = new UserINFO();
+    public UserInfoDTO mapToDto(User user) {
+        UserInfoDTO userInfo = new UserInfoDTO();
         userInfo.setId(user.getId());
         userInfo.setEmail(user.getEmail());
         userInfo.setBalance(user.getBalance());
@@ -24,7 +24,7 @@ public class UserInfoMapper implements EntityMapper<User, UserINFO>{
     }
 
     @Override
-    public User mapToEntity(UserINFO userInfo) {
+    public User mapToEntity(UserInfoDTO userInfo) {
         User user = new User();
         user.setId(userInfo.getId());
         user.setEmail(userInfo.getEmail());
@@ -33,8 +33,7 @@ public class UserInfoMapper implements EntityMapper<User, UserINFO>{
     }
 
     @Override
-    public List<UserINFO> mapToDto(List<User> users) {
-        Objects.requireNonNull(users, "Can not find users");
+    public List<UserInfoDTO> mapToDto(List<User> users) {
         return users
                 .stream()
                 .map(this::mapToDto)

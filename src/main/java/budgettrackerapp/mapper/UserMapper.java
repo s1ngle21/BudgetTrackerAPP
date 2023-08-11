@@ -39,7 +39,6 @@ public class UserMapper implements EntityMapper<User, UserDTO> {
 
     @Override
     public List<UserDTO> mapToDto(List<User> users) {
-        Objects.requireNonNull(users, "Can not find users");
         return users
                 .stream()
                 .map(this::mapToDto)

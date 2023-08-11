@@ -1,13 +1,12 @@
 package budgettrackerapp.controller;
 
 import budgettrackerapp.dto.CategoryDTO;
+import budgettrackerapp.dto.CategoryDateInfoDTO;
 import budgettrackerapp.service.category.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Month;
 
 @RestController
 @AllArgsConstructor
@@ -39,12 +38,9 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}/users/{userId}")
-    public ResponseEntity<CategoryDTO> getById(@PathVariable Long categoryId,
-                                               @PathVariable Long userId,
-                                               @RequestParam(defaultValue = "2023") int year,
-                                               @RequestParam(required = false) Month month) {
+    public ResponseEntity<CategoryDTO> getByIdAndSortedByDate(@RequestBody CategoryDateInfoDTO categoryDateInfoDto) {
         return ResponseEntity
-                .ok(categoryService.getById(categoryId, userId, year, month));
+                .ok(categoryService.getByIdAndSortedByDate(categoryDateInfoDto));
     }
 
 

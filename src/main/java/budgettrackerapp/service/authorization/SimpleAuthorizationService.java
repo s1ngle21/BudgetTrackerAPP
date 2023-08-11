@@ -3,7 +3,9 @@ package budgettrackerapp.service.authorization;
 import budgettrackerapp.dto.*;
 import budgettrackerapp.exeptions.PasswordsDoesNotMatchException;
 import budgettrackerapp.exeptions.RegistrationException;
+import budgettrackerapp.exeptions.UserDoesNotExistException;
 import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
+import budgettrackerapp.repository.user.UserRepository;
 import budgettrackerapp.service.user.UserDetailsServiceImpl;
 import budgettrackerapp.service.user.UserService;
 import budgettrackerapp.utils.JwtTokenUtils;
@@ -12,10 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -23,37 +25,41 @@ import java.util.Objects;
 public class SimpleAuthorizationService implements AuthorizationService {
 
     private AuthenticationManager authenticationManager;
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
     private JwtTokenUtils jwtTokenUtils;
     private UserService userService;
+    private UserRepository userRepository;
 
 
     @Override
-    public TokenResponse getAuthToken(AuthorizationRequest registrationRequest) {
-        try {
+    public TokenResponse signIn(AuthRequest registrationRequest) {
+        /*try {
            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                    registrationRequest.getUsername(), registrationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Wrong username or password");
+        }*/ //to remove
+
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(registrationRequest.getUsername());
+            String token = jwtTokenUtils.generateToken(userDetails);
+            return new TokenResponse(token);
+        } catch (UsernameNotFoundException e) {
+            throw new UserDoesNotExistException("User not found", e);
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(registrationRequest.getUsername());
-        String token = jwtTokenUtils.generateToken(userDetails);
-        return new TokenResponse(token);
     }
 
     @Override
-    public RegistrationResponse createUser(RegistrationUserDto registrationUserDto) {
-        if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
-            throw new PasswordsDoesNotMatchException("Passwords does not match!");
-        }
+    public RegistrationResponse signUp(RegistrationUserDto registrationUserDto) {
         if (registrationUserDto.getUsername().isEmpty()) {
             throw new RegistrationException("Username field can not be empty!");
         }
         if (registrationUserDto.getPassword().isEmpty()) {
             throw new RegistrationException("Password field can not be empty!");
         }
-        if (userService.findByName(registrationUserDto.getUsername()) != null) {
-            throw new UserWithCurrentNameAlreadyExistException("User with current username already exist!");
+        if (userRepository.existsByUsername(registrationUserDto.getUsername())) {
+            throw new UserWithCurrentNameAlreadyExistException(String.format("User with current username %s already exist!",
+                    registrationUserDto.getUsername()));
         }
         userService.createNewUser(registrationUserDto);
         return new RegistrationResponse("Registration successful");

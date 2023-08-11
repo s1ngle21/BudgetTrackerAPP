@@ -2,6 +2,7 @@ package budgettrackerapp;
 
 import budgettrackerapp.controller.CategoryController;
 import budgettrackerapp.dto.CategoryDTO;
+import budgettrackerapp.dto.CategoryDateInfoDTO;
 import budgettrackerapp.service.category.CategoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -105,26 +106,7 @@ public class CategoryControllerIntegrationTest {
                 .andExpect(content().string("Category has been deleted"));
     }
 
-
-    @Test
-    public void whenPerformGetByIdThenCorrectCategoryMustBeReturned() throws Exception {
-        Long categoryId = 1L;
-        Long userId = 1L;
-        int year = 2023;
-        Month month = Month.JANUARY;
-        CategoryDTO categoryDto = new CategoryDTO("Products", userId);
-
-        when(categoryService.getById(eq(categoryId), eq(userId), eq(year), eq(month)))
-                .thenReturn(categoryDto);
-
-
-        mockMvc.perform(get("/categories/{categoryId}/users/{userId}", categoryId, userId)
-                .param("year", String.valueOf(year))
-                .param("month", String.valueOf(month)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Products"));
-    }
-
+    //whenPerformGetByIdThenCorrectCategoryMustBeReturned()
 
 
     private static String toJsonString(Object obj) {

@@ -1,7 +1,7 @@
 package budgettrackerapp;
 
 import budgettrackerapp.controller.AuthorizationController;
-import budgettrackerapp.dto.AuthorizationRequest;
+import budgettrackerapp.dto.AuthRequest;
 import budgettrackerapp.dto.RegistrationResponse;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.TokenResponse;
@@ -56,13 +56,13 @@ public class AuthorizationControllerIntegrationTest {
 
     @Test
     public void whenPerformGetAuthTokenOperationTokenMustBeReturned() throws Exception {
-        AuthorizationRequest request = new AuthorizationRequest();
+        AuthRequest request = new AuthRequest();
         request.setUsername("test_username");
         request.setPassword("test_password");
 
         TokenResponse tokenResponse = new TokenResponse("test_token");
 
-        when(authorizationService.getAuthToken(any(AuthorizationRequest.class)))
+        when(authorizationService.signIn(any(AuthRequest.class)))
                 .thenReturn(tokenResponse);
 
 
@@ -78,11 +78,10 @@ public class AuthorizationControllerIntegrationTest {
         RegistrationUserDto registrationUserDto = new RegistrationUserDto();
         registrationUserDto.setUsername("test_username");
         registrationUserDto.setPassword("test_password");
-        registrationUserDto.setConfirmPassword("test_password");
 
         RegistrationResponse response = new RegistrationResponse("Registration successful");
 
-        when(authorizationService.createUser(any(RegistrationUserDto.class)))
+        when(authorizationService.signUp(any(RegistrationUserDto.class)))
                 .thenReturn(response);
 
         mockMvc.perform(post("/registration")
@@ -94,11 +93,11 @@ public class AuthorizationControllerIntegrationTest {
 
     @Test
     public void whenPerformGetAuthTokenOperationWithWrongCredentialsBadCredentialsExceptionMustBeThrown() throws Exception {
-        AuthorizationRequest request = new AuthorizationRequest();
+        AuthRequest request = new AuthRequest();
         request.setUsername("test_username");
         request.setPassword("wrong_password");
 
-        when(authorizationService.getAuthToken(any(AuthorizationRequest.class)))
+        when(authorizationService.signIn(any(AuthRequest.class)))
                 .thenThrow(new BadCredentialsException("Wrong username or password"));
 
         mockMvc.perform(post("/authorization")
@@ -112,26 +111,10 @@ public class AuthorizationControllerIntegrationTest {
     }
 
     @Test
-    public void whenPerformCreateUserOperationAndPasswordsDoesNotMatchesThenPasswordsDoesNotMatchExceptionMustBeThrown() throws Exception {
-        RegistrationUserDto registrationUserDto = new RegistrationUserDto();
-        registrationUserDto.setUsername("test_username");
-        registrationUserDto.setPassword("test_password");
-        registrationUserDto.setConfirmPassword("wrong_test_password");
-
-        mockMvc.perform(post("/registration")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJsonString(registrationUserDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Passwords does not match!"))
-                .andExpect(jsonPath("$.status").value(400));
-    }
-
-    @Test
     public void whenPerformCreateUserOperationAndUsernameIsEmptyThenRegistrationExceptionMustBeThrown() throws Exception {
         RegistrationUserDto registrationUserDto = new RegistrationUserDto();
         registrationUserDto.setUsername("");
         registrationUserDto.setPassword("password");
-        registrationUserDto.setConfirmPassword("password");
 
         mockMvc.perform(post("/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +130,6 @@ public class AuthorizationControllerIntegrationTest {
         RegistrationUserDto registrationUserDto = new RegistrationUserDto();
         registrationUserDto.setUsername("test_username");
         registrationUserDto.setPassword("");
-        registrationUserDto.setConfirmPassword("");
 
 
 
@@ -165,9 +147,8 @@ public class AuthorizationControllerIntegrationTest {
         RegistrationUserDto registrationUserDto = new RegistrationUserDto();
         registrationUserDto.setUsername("existing_user");
         registrationUserDto.setPassword("test_password");
-        registrationUserDto.setConfirmPassword("test_password");
 
-        when(authorizationService.createUser(any(RegistrationUserDto.class)))
+        when(authorizationService.signUp(any(RegistrationUserDto.class)))
                 .thenThrow(new UserWithCurrentNameAlreadyExistException("User with current username already exist!"));
 
         mockMvc.perform(post("/registration")

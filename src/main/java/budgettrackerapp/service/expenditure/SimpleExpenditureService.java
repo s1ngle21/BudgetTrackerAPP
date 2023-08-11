@@ -2,16 +2,13 @@ package budgettrackerapp.service.expenditure;
 
 import budgettrackerapp.dto.CategoryDTO;
 import budgettrackerapp.dto.ExpenditureDTO;
-import budgettrackerapp.entity.Category;
 import budgettrackerapp.entity.Expenditure;
 import budgettrackerapp.entity.User;
 import budgettrackerapp.exeptions.ExpenditureInSpecificCategoryDoesNotExistException;
 import budgettrackerapp.mapper.CategoryMapper;
-import budgettrackerapp.mapper.UserMapper;
 import budgettrackerapp.repository.expenditure.ExpenditureRepository;
 import budgettrackerapp.repository.user.UserRepository;
 import budgettrackerapp.service.category.CategoryService;
-import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
 import budgettrackerapp.mapper.ExpenditureMapper;
 import org.springframework.stereotype.Service;
@@ -68,7 +65,7 @@ public class SimpleExpenditureService implements ExpenditureService {
                 .filter(expenditureDto -> expenditureDto.getId().equals(expenditureId))
                 .findFirst()
                 .orElseThrow(() -> new ExpenditureInSpecificCategoryDoesNotExistException("Expenditure does not exist in this category: " +
-                        categoryDto.getName()))); //+++++++
+                        categoryDto.getName())));
 
         categoryService.updateBalance(categoryDto.getAmount().subtract(expenditure.getAmount()), categoryDto);
         User user = userRepository.findById(categoryDto.getUserId()).get();

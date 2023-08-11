@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class UserINFO {
+public class UserInfoDTO {
     private Long id;
     private String email;
     private BigDecimal balance;

@@ -2,16 +2,17 @@ package budgettrackerapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "category")
 @Getter
 @Setter
 @RequiredArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @ToString
 public class Category {
     @Id
@@ -21,7 +22,7 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "amount")
+    @Column(name = "amount", scale = 3)
     private BigDecimal amount;
 
     @OneToMany(mappedBy = "category")

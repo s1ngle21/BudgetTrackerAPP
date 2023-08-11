@@ -1,6 +1,6 @@
 package budgettrackerapp.controller;
 
-import budgettrackerapp.dto.AuthorizationRequest;
+import budgettrackerapp.dto.AuthRequest;
 import budgettrackerapp.dto.RegistrationResponse;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.TokenResponse;
@@ -17,12 +17,12 @@ public class AuthorizationController {
     private AuthorizationService authorizationService;
 
     @PostMapping("/authorization")
-    public ResponseEntity<TokenResponse> getAuthToken(@RequestBody AuthorizationRequest registrationRequest) {
-        return ResponseEntity.ok(authorizationService.getAuthToken(registrationRequest));
+    public ResponseEntity<TokenResponse> getAuthToken(@RequestBody AuthRequest registrationRequest) {
+        return ResponseEntity.ok(authorizationService.signIn(registrationRequest));
     }
 
     @PostMapping("/registration")
     public ResponseEntity<RegistrationResponse> createUser(@RequestBody RegistrationUserDto registrationUserDto) {
-        return ResponseEntity.ok(authorizationService.createUser(registrationUserDto));
+        return ResponseEntity.ok(authorizationService.signUp(registrationUserDto));
     }
 }
