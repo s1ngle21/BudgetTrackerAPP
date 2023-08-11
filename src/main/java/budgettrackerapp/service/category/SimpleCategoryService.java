@@ -1,20 +1,19 @@
 package budgettrackerapp.service.category;
 
 import budgettrackerapp.dto.CategoryDTO;
+import budgettrackerapp.dto.CategoryDateInfoDTO;
 import budgettrackerapp.dto.ExpenditureDTO;
-import budgettrackerapp.dto.UserDTO;
 import budgettrackerapp.entity.Category;
 import budgettrackerapp.entity.User;
 import budgettrackerapp.exeptions.CategoryDoesNotExistException;
-import budgettrackerapp.exeptions.ExpenditureInSpecificCategoryDoesNotExistException;
+import budgettrackerapp.exeptions.UserDoesNotExistException;
 import budgettrackerapp.mapper.CategoryMapper;
-import budgettrackerapp.mapper.UserMapper;
 import budgettrackerapp.repository.category.CategoryRepository;
 import budgettrackerapp.repository.user.UserRepository;
-import budgettrackerapp.service.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,16 +30,14 @@ import java.util.stream.Collectors;
 public class SimpleCategoryService implements CategoryService {
 
     private CategoryRepository categoryRepository;
-//    private UserService userService;
     private CategoryMapper categoryMapper;
-    private UserMapper userMapper;
     private UserRepository userRepository;
 
     @Override
     public CategoryDTO create(CategoryDTO categoryDto, Long userId) {
-        Objects.requireNonNull(categoryDto.getName(), "Please, at least provide name for your category!"); //+++
-        Objects.requireNonNull(userId, "User Id must be provided to create category!");
-        User user = userRepository.findById(userId).get();
+        Objects.requireNonNull(categoryDto.getName(), "Please, provide a name for your category!");
+        Objects.requireNonNull(userId, "User Id must be provided to create category!"); // питання тут
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserDoesNotExistException("User not found!"));
         categoryDto.setUserId(user.getId());
 
         Category category = categoryMapper.mapToEntity(categoryDto);
@@ -54,6 +51,7 @@ public class SimpleCategoryService implements CategoryService {
 
     @Override
     public void updateBalance(BigDecimal amount, CategoryDTO categoryDto) {
+        Objects.requireNonNull(categoryDto, "Category does not exist!");
         Category category = categoryMapper.mapToEntity(categoryDto);
         category.setAmount(amount);
         categoryRepository.save(category);
@@ -61,13 +59,13 @@ public class SimpleCategoryService implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO getById(Long id, Long userId) {
-        Objects.requireNonNull(id, "Id must be provided for this operation!");
-        Objects.requireNonNull(id, "UserId must be provided for this operation!");
+    public CategoryDTO getById(Long categoryId, Long userId) {
+        Objects.requireNonNull(categoryId, "Wrong parameter passed - pass categoryId!");
+        Objects.requireNonNull(userId, "Wrong parameter passed - pass userId!");
 
-        CategoryDTO categoryDto = categoryMapper.mapToDto(categoryRepository.findByIdAndUserId(id, userId));
+        CategoryDTO categoryDto = categoryMapper.mapToDto(categoryRepository.findByIdAndUserId(categoryId, userId).get());
         if (categoryDto == null) {
-            throw new CategoryDoesNotExistException("Category does not exist!");
+            throw new CategoryDoesNotExistException(String.format("Category: [%s] does not exist!", categoryDto.getName()));
         }
         return categoryDto;
     }
@@ -77,47 +75,41 @@ public class SimpleCategoryService implements CategoryService {
     public Page<CategoryDTO> getAll(Long userId, int pageNumber, int pageSize) {
         List<CategoryDTO> categoriesDTO = categoryMapper.mapToDto(categoryRepository.findAllByUserId(userId));
 
-        Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<CategoryDTO> categoryPage = new PageImpl<>(categoriesDTO, pageable, categoriesDTO.size());
-
-        if (!categoryPage.hasContent()) {
-            throw new CategoryDoesNotExistException("Category does not exist");
-        }
         return categoryPage;
     }
 
     @Override
-    public void delete(Long id, Long userId) {
-        Objects.requireNonNull(id, "Id must be provided to delete category operation!");
-        Objects.requireNonNull(id, "User Id must be provided to delete category operation!");
-        CategoryDTO categoryDto = this.getById(id, userId);
+    public void delete(Long categoryId, Long userId) {
+        Objects.requireNonNull(categoryId, "Wrong parameter passed, pass categoryId!");
+        Objects.requireNonNull(userId, "Wrong parameter passed, pass userId!");
 
-        User user = userRepository.findById(categoryDto.getUserId()).get();
-        user.setBalance(user.getBalance().add(categoryDto.getAmount()));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserDoesNotExistException("User not found"));
         userRepository.save(user);
 
-        categoryRepository.deleteById(id);
+        categoryRepository.deleteById(categoryId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CategoryDTO getById(Long categoryId, Long userId, int year, Month month) {
-        Objects.requireNonNull(categoryId, "Category Id must be provided for this operation!");
-        Objects.requireNonNull(categoryId, "User Id must be provided for this operation!");
+    public CategoryDTO getByIdAndSortedByDate(CategoryDateInfoDTO categoryDateInfoDto) {
+        Objects.requireNonNull(categoryDateInfoDto.getCategoryId(), "categoryId must be provided for this operation!");
+        Objects.requireNonNull(categoryDateInfoDto.getUserId(), "userId must be provided for this operation!");
 
-        CategoryDTO categoryDto = this.getById(categoryId, userId);
+        CategoryDTO categoryDto = this.getById(categoryDateInfoDto.getCategoryId(), categoryDateInfoDto.getUserId());
 
         List<ExpenditureDTO> expendituresDto = categoryDto.getExpenditures();
 
-        expendituresDto
+        List<ExpenditureDTO> sortedExpenditures = expendituresDto
                 .stream()
                 .filter(expenditure ->
-                        expenditure.getCreatedAt().getMonth() == month &&
-                                expenditure.getCreatedAt().getYear() == year)
-                .collect(Collectors.toList());
+                        expenditure.getCreatedAt().getMonth() == categoryDateInfoDto.getMonth() &&
+                                expenditure.getCreatedAt().getYear() == categoryDateInfoDto.getYear())
+                .toList();
 
-        BigDecimal amount = expendituresDto
+        BigDecimal amount = sortedExpenditures
                 .stream()
                 .map(ExpenditureDTO::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

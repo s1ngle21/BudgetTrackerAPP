@@ -64,4 +64,11 @@ public class CustomExceptionHandler {
         return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
+    @ExceptionHandler(RegistrationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleRegistrationException(RegistrationException e) {
+        LOGGER.error(e.getMessage(), e);
+        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
 }

@@ -3,7 +3,7 @@ package budgettrackerapp.service.authorization;
 import budgettrackerapp.dto.*;
 
 public interface AuthorizationService {
-    TokenResponse getAuthToken(AuthorizationRequest registrationRequest);
+    TokenResponse signIn(AuthRequest registrationRequest);
 
-    RegistrationResponse createUser(RegistrationUserDto registrationUserDto);
+    RegistrationResponse signUp(RegistrationUserDto registrationUserDto);
 }

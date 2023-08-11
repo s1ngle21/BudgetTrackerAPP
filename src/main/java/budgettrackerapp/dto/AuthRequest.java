@@ -3,7 +3,7 @@ package budgettrackerapp.dto;
 import lombok.Data;
 
 @Data
-public class AuthorizationRequest {
+public class AuthRequest {
     private String username;
     private String password;
 }

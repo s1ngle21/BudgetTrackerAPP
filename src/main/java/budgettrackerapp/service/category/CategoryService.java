@@ -1,6 +1,7 @@
 package budgettrackerapp.service.category;
 
 import budgettrackerapp.dto.CategoryDTO;
+import budgettrackerapp.dto.CategoryDateInfoDTO;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
@@ -19,5 +20,5 @@ public interface CategoryService {
 
     void delete(Long id, Long userId);
 
-    CategoryDTO getById(Long categoryId, Long userId, int year, Month month);
+    CategoryDTO getByIdAndSortedByDate(CategoryDateInfoDTO categoryDateInfoDto);
 }

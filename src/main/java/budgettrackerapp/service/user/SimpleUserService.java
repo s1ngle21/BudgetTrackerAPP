@@ -3,7 +3,7 @@ package budgettrackerapp.service.user;
 import budgettrackerapp.dto.BalanceDTO;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.UserDTO;
-import budgettrackerapp.dto.UserINFO;
+import budgettrackerapp.dto.UserInfoDTO;
 import budgettrackerapp.entity.User;
 import budgettrackerapp.exeptions.UserDoesNotExistException;
 import budgettrackerapp.mapper.UserInfoMapper;
@@ -33,9 +33,9 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserINFO findUserInfoById(Long id) {
+    public UserInfoDTO findUserInfoById(Long id) {
         Objects.requireNonNull(id, "Id must be provided for this operation!");
-        UserINFO userInfo = userInfoMapper.mapToDto(userRepository.findById(id).get());
+        UserInfoDTO userInfo = userInfoMapper.mapToDto(userRepository.findById(id).get());
         if (userInfo == null) {
             throw new UserDoesNotExistException("Can not find user");
         }
@@ -65,7 +65,7 @@ public class SimpleUserService implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByName(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).get();
     }
 
     @Override

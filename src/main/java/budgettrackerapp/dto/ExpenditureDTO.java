@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class ExpenditureDTO {
     private Long id;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private BigDecimal amount;
     private String comment;
 }

@@ -11,11 +11,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users") // питання тут
 @Getter
 @Setter
 @RequiredArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id", "email"})
 @ToString
 public class User implements UserDetails {
 
@@ -23,11 +23,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "balance")
