@@ -57,7 +57,7 @@ public class SimpleAuthorizationService implements AuthorizationService {
         if (registrationUserDto.getPassword().isEmpty()) {
             throw new RegistrationException("Password field can not be empty!");
         }
-        if (userRepository.existsByUsername(registrationUserDto.getUsername())) {
+        if (userRepository.existsByEmail(registrationUserDto.getUsername())) {
             throw new UserWithCurrentNameAlreadyExistException(String.format("User with current username %s already exist!",
                     registrationUserDto.getUsername()));
         }
