@@ -1,7 +1,7 @@
 package budgettrackerapp.controller;
 
 import budgettrackerapp.dto.ExpenditureDTO;
-import budgettrackerapp.entity.Expenditure;
+import budgettrackerapp.dto.ExpenditureMoveRequestDTO;
 import budgettrackerapp.service.expenditure.ExpenditureService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +14,10 @@ public class ExpenditureController {
 
     private ExpenditureService expenditureService;
 
-    @PostMapping("/users/{userId}/categories/{categoryId}")
-    public ResponseEntity<ExpenditureDTO> create(@RequestBody ExpenditureDTO expenditureDto,
-                                                 @PathVariable Long userId,
-                                                 @PathVariable Long categoryId) {
+    @PostMapping
+    public ResponseEntity<ExpenditureDTO> create(@RequestBody ExpenditureDTO expenditureDto) {
         return ResponseEntity
-                .ok(expenditureService.createAndAddToCategory(expenditureDto, categoryId, userId));
+                .ok(expenditureService.createAndAddToCategory(expenditureDto, expenditureDto.getCategoryId(), expenditureDto.getUserId()));
     }
 
     @DeleteMapping("/{expenditureId}/users/{userId}/categories/{categoryId}")
@@ -31,11 +29,11 @@ public class ExpenditureController {
                 .ok("Expenditure has been deleted");
     }
 
-    @PostMapping("/{expenditureId}/users/{userId}/categories/{categoryDestinationId}")
-    public ResponseEntity<String> moveToAnotherCategory(@PathVariable Long categoryDestinationId,
-                                                        @PathVariable Long expenditureId,
-                                                        @PathVariable Long userId) {
-        expenditureService.moveToAnotherCategory(expenditureId, categoryDestinationId, userId);
+    @PostMapping("/move")
+    public ResponseEntity<String> moveToAnotherCategory(@RequestBody ExpenditureMoveRequestDTO expenditureMoveRequestDto) {
+        expenditureService.moveToAnotherCategory(expenditureMoveRequestDto.getExpenditureId(),
+                                                    expenditureMoveRequestDto.getCategoryDestinationId(),
+                                                    expenditureMoveRequestDto.getUserId());
         return ResponseEntity
                 .ok("Expenditure has been moved to another category");
     }

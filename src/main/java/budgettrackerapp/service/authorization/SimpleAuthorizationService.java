@@ -1,12 +1,10 @@
 package budgettrackerapp.service.authorization;
 
 import budgettrackerapp.dto.*;
-import budgettrackerapp.exeptions.PasswordsDoesNotMatchException;
 import budgettrackerapp.exeptions.RegistrationException;
 import budgettrackerapp.exeptions.UserDoesNotExistException;
-import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
+import budgettrackerapp.exeptions.UsernameAlreadyExistsException;
 import budgettrackerapp.repository.user.UserRepository;
-import budgettrackerapp.service.user.UserDetailsServiceImpl;
 import budgettrackerapp.service.user.UserService;
 import budgettrackerapp.utils.JwtTokenUtils;
 import lombok.AllArgsConstructor;
@@ -58,7 +56,7 @@ public class SimpleAuthorizationService implements AuthorizationService {
             throw new RegistrationException("Password field can not be empty!");
         }
         if (userRepository.existsByEmail(registrationUserDto.getUsername())) {
-            throw new UserWithCurrentNameAlreadyExistException(String.format("User with current username %s already exist!",
+            throw new UsernameAlreadyExistsException(String.format("User with current username %s already exist!",
                     registrationUserDto.getUsername()));
         }
         userService.createNewUser(registrationUserDto);

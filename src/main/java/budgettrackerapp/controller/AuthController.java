@@ -9,20 +9,22 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-public class AuthorizationController {
+@RequestMapping("/api/auth")
+public class AuthController {
     private AuthorizationService authorizationService;
 
-    @PostMapping("/authorization")
-    public ResponseEntity<TokenResponse> getAuthToken(@RequestBody AuthRequest registrationRequest) {
+    @PostMapping("/sign-in")
+    public ResponseEntity<TokenResponse> signUp(@RequestBody AuthRequest registrationRequest) {
         return ResponseEntity.ok(authorizationService.signIn(registrationRequest));
     }
 
-    @PostMapping("/registration")
-    public ResponseEntity<RegistrationResponse> createUser(@RequestBody RegistrationUserDto registrationUserDto) {
+    @PostMapping("/sign-up")
+    public ResponseEntity<RegistrationResponse> signIn(@RequestBody RegistrationUserDto registrationUserDto) {
         return ResponseEntity.ok(authorizationService.signUp(registrationUserDto));
     }
 }

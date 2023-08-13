@@ -15,4 +15,6 @@ public class ExpenditureDTO {
     private LocalDateTime createdAt;
     private BigDecimal amount;
     private String comment;
+    private Long categoryId;
+    private Long userId;
 }

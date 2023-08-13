@@ -1,11 +1,11 @@
 package budgettrackerapp;
 
-import budgettrackerapp.controller.AuthorizationController;
+import budgettrackerapp.controller.AuthController;
 import budgettrackerapp.dto.AuthRequest;
 import budgettrackerapp.dto.RegistrationResponse;
 import budgettrackerapp.dto.RegistrationUserDto;
 import budgettrackerapp.dto.TokenResponse;
-import budgettrackerapp.exeptions.UserWithCurrentNameAlreadyExistException;
+import budgettrackerapp.exeptions.UsernameAlreadyExistsException;
 import budgettrackerapp.service.authorization.SimpleAuthorizationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ public class AuthorizationControllerIntegrationTest {
     private UserDetailsService userDetailsService;
 
     @InjectMocks
-    private AuthorizationController authorizationController;
+    private AuthController authorizationController;
 
     private MockMvc mockMvc;
 
@@ -149,7 +149,7 @@ public class AuthorizationControllerIntegrationTest {
         registrationUserDto.setPassword("test_password");
 
         when(authorizationService.signUp(any(RegistrationUserDto.class)))
-                .thenThrow(new UserWithCurrentNameAlreadyExistException("User with current username already exist!"));
+                .thenThrow(new UsernameAlreadyExistsException("User with current username already exist!"));
 
         mockMvc.perform(post("/registration")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +157,7 @@ public class AuthorizationControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("User with current username already exist!"))
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserWithCurrentNameAlreadyExistException))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UsernameAlreadyExistsException))
                 .andExpect(result -> assertEquals("Wrong username or password", result.getResolvedException().getMessage()));
 
 

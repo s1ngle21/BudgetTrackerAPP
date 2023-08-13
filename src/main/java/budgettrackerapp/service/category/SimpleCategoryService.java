@@ -19,10 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Month;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -51,8 +50,8 @@ public class SimpleCategoryService implements CategoryService {
 
     @Override
     public void updateBalance(BigDecimal amount, CategoryDTO categoryDto) {
-        Objects.requireNonNull(categoryDto, "Category does not exist!");
-        Category category = categoryMapper.mapToEntity(categoryDto);
+        Category category = categoryRepository.findByIdAndUserId(categoryDto.getId(), categoryDto.getUserId()).orElseThrow(() ->
+                new CategoryDoesNotExistException("Category not found"));
         category.setAmount(amount);
         categoryRepository.save(category);
     }
@@ -77,8 +76,7 @@ public class SimpleCategoryService implements CategoryService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<CategoryDTO> categoryPage = new PageImpl<>(categoriesDTO, pageable, categoriesDTO.size());
-        return categoryPage;
+        return new PageImpl<>(categoriesDTO, pageable, categoriesDTO.size());
     }
 
     @Override

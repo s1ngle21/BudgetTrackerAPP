@@ -15,10 +15,9 @@ public class UserController {
 
     private UserService userService;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<String> setBalance(@RequestBody BalanceDTO balanceDto,
-                                             @PathVariable Long userId) {
-        userService.setBalance(balanceDto, userId);
+    @PostMapping("/balance")
+    public ResponseEntity<String> setBalance(@RequestBody BalanceDTO balanceDto) {
+        userService.setBalance(balanceDto, balanceDto.getUserId());
         return ResponseEntity
                 .ok("Balance has been updated");
     }

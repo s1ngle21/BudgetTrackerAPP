@@ -1,15 +1,12 @@
 package budgettrackerapp.exeptions;
 
-public class RegistrationException extends RuntimeException {
-    public RegistrationException() {
-        super();
-    }
+public class RegistrationException extends AppException {
 
     public RegistrationException(String message) {
-        super(message);
+        super("BTS-3", message);
     }
 
     public RegistrationException(String message, Throwable cause) {
-        super(message, cause);
+        super("BTS-3", message, cause);
     }
 }

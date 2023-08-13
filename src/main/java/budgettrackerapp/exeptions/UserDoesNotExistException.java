@@ -1,15 +1,11 @@
 package budgettrackerapp.exeptions;
 
-public class UserDoesNotExistException extends RuntimeException {
-    public UserDoesNotExistException() {
-        super();
-    }
-
+public class UserDoesNotExistException extends AppException {
     public UserDoesNotExistException(String message) {
-        super(message);
+        super("BTS-4", message);
     }
 
     public UserDoesNotExistException(String message, Throwable cause) {
-        super(message, cause);
+        super("BTS-4", message, cause);
     }
 }

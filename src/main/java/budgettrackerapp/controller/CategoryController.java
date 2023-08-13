@@ -15,10 +15,10 @@ public class CategoryController {
 
     private CategoryService categoryService;
 
-    @PostMapping("/users/{userId}")
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDto, @PathVariable Long userId) {
+    @PostMapping
+    public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDto) {
         return ResponseEntity
-                .ok(categoryService.create(categoryDto, userId));
+                .ok(categoryService.create(categoryDto, categoryDto.getUserId()));
     }
 
     @GetMapping("/users/{userId}")

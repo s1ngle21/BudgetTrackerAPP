@@ -1,15 +1,13 @@
 package budgettrackerapp.exeptions;
 
-public class CategoryDoesNotExistException extends RuntimeException {
-    public CategoryDoesNotExistException() {
-        super();
-    }
+public class CategoryDoesNotExistException extends AppException {
+
 
     public CategoryDoesNotExistException(String message) {
-        super(message);
+        super("BTS-1", message);
     }
 
     public CategoryDoesNotExistException(String message, Throwable cause) {
-        super(message, cause);
+        super("BTS-1", message, cause);
     }
 }
