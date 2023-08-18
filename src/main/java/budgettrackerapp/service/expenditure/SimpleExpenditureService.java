@@ -54,7 +54,7 @@ public class SimpleExpenditureService implements ExpenditureService {
     public void delete(Long categoryId, Long expenditureId, Long userId) {
         Objects.requireNonNull(categoryId, "categoryId id must not be null!");
         Objects.requireNonNull(expenditureId, "expenditureId must not be null!");
-        Objects.requireNonNull(expenditureId, "userId must not be null!");
+        Objects.requireNonNull(userId, "userId must not be null!");
         Expenditure expenditure = expenditureRepository.findById(expenditureId).orElseThrow(() ->
                 new ExpenditureInSpecificCategoryDoesNotExistException("Expenditure not found"));
 
