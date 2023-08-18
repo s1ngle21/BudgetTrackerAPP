@@ -19,12 +19,12 @@ public class AuthController {
     private AuthorizationService authorizationService;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signUp(@RequestBody AuthRequest registrationRequest) {
+    public ResponseEntity<TokenResponse> signIn(@RequestBody AuthRequest registrationRequest) {
         return ResponseEntity.ok(authorizationService.signIn(registrationRequest));
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<RegistrationResponse> signIn(@RequestBody RegistrationUserDto registrationUserDto) {
+    public ResponseEntity<RegistrationResponse> signUp(@RequestBody RegistrationUserDto registrationUserDto) {
         return ResponseEntity.ok(authorizationService.signUp(registrationUserDto));
     }
 }

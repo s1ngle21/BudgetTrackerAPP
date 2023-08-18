@@ -6,13 +6,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppException extends RuntimeException {
-    private String errorCode;
-    public AppException(String errorCode, String message) {
+    private ExceptionCode errorCode;
+    public AppException(ExceptionCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
-    public AppException(String errorCode, String message, Throwable cause) {
+    public AppException(ExceptionCode errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
     }

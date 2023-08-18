@@ -1,5 +1,6 @@
 package budgettrackerapp.exeptions.handler;
 
+import budgettrackerapp.exeptions.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ErrorResponse {
-    private String errorCode;
+    private ExceptionCode errorCode;
     private String message;
     private int status;
 

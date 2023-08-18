@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,18 +39,19 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
                 username = jwtTokenUtils.getUserName(jwt);
             } catch (ExpiredJwtException e) {
                 log.debug("Expired token lifetime!");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Expired token lifetime!");
             } catch (SignatureException e) {
-                log.debug("Wrong token signature!");
+                log.debug("Invalid token signature!");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token signature!");
             }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    username,
-                    null,
-                    jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
-            );
-            SecurityContextHolder.getContext().setAuthentication(token);
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        jwtTokenUtils.getAuthorityRoles(jwt));
+                SecurityContextHolder.getContext().setAuthentication(token);
         }
         filterChain.doFilter(request, response);
     }

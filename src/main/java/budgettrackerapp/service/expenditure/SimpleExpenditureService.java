@@ -5,6 +5,7 @@ import budgettrackerapp.dto.ExpenditureDTO;
 import budgettrackerapp.entity.Expenditure;
 import budgettrackerapp.entity.User;
 import budgettrackerapp.exeptions.ExpenditureInSpecificCategoryDoesNotExistException;
+import budgettrackerapp.exeptions.UserDoesNotExistException;
 import budgettrackerapp.mapper.CategoryMapper;
 import budgettrackerapp.repository.expenditure.ExpenditureRepository;
 import budgettrackerapp.repository.user.UserRepository;
@@ -34,16 +35,16 @@ public class SimpleExpenditureService implements ExpenditureService {
         Objects.requireNonNull(categoryId, "Id must be provided for this operation!");
         Objects.requireNonNull(userId, "Id must be provided for this operation!");
         CategoryDTO categoryDto = categoryService.getById(categoryId, userId);
-        User user = userRepository.findById(categoryDto.getUserId()).get();
+        User user = userRepository.findById(categoryDto.getUserId()).orElseThrow(() -> new UserDoesNotExistException("User not found"));
         Expenditure expenditure = expenditureMapper.mapToEntity(expenditureDto);
 
-        BigDecimal amountOfExpenditure = expenditure.getAmount();
-        user.setBalance((user.getBalance()).subtract(amountOfExpenditure));
+        BigDecimal amount = expenditure.getAmount();
+        user.setBalance(user.getBalance().subtract(amount));
         userRepository.save(user);
 
         expenditure.setCategory(categoryMapper.mapToEntity(categoryDto));
 
-        categoryService.updateBalance(categoryDto.getAmount().add(amountOfExpenditure), categoryDto);
+        categoryService.updateBalance(categoryDto.getAmount().add(amount), categoryDto);
 
         Expenditure savedExpenditure = expenditureRepository.save(expenditure);
         return expenditureMapper.mapToDto(savedExpenditure);
@@ -51,14 +52,15 @@ public class SimpleExpenditureService implements ExpenditureService {
 
     @Override
     public void delete(Long categoryId, Long expenditureId, Long userId) {
-        Objects.requireNonNull(categoryId, "Category id must be provided for this operation!");
-        Objects.requireNonNull(expenditureId, "Expenditure id must be provided for this operation!");
+        Objects.requireNonNull(categoryId, "categoryId id must not be null!");
+        Objects.requireNonNull(expenditureId, "expenditureId must not be null!");
+        Objects.requireNonNull(expenditureId, "userId must not be null!");
+        Expenditure expenditure = expenditureRepository.findById(expenditureId).orElseThrow(() ->
+                new ExpenditureInSpecificCategoryDoesNotExistException("Expenditure not found"));
 
-        Expenditure expenditure = expenditureRepository.findById(expenditureId).get();
-        Objects.requireNonNull(expenditure, "Can not find expenditure");
 
         CategoryDTO categoryDto = categoryService.getById(categoryId, userId);
-        Objects.requireNonNull(expenditure, "Can not find category");
+
 
         expenditureMapper.mapToEntity(categoryDto.getExpenditures()
                 .stream()
@@ -76,15 +78,14 @@ public class SimpleExpenditureService implements ExpenditureService {
 
     @Override
     public void moveToAnotherCategory(Long expenditureId, Long categoryId, Long userId) {
-        Objects.requireNonNull(categoryId, "Category id must be provided for this operation!");
-        Objects.requireNonNull(expenditureId, "Expenditure id must be provided for this operation!");
-        Objects.requireNonNull(userId, "User id must be provided for this operation!");
+        Objects.requireNonNull(categoryId, "categoryId must not be null!");
+        Objects.requireNonNull(expenditureId, "expenditureId must not be null!");
+        Objects.requireNonNull(userId, "userId must not be null!");
 
-        Expenditure expenditure = expenditureRepository.findById(expenditureId).get();
-        Objects.requireNonNull(expenditure, "Can not find expenditure");
+        Expenditure expenditure = expenditureRepository.findById(expenditureId).orElseThrow(() ->
+                new ExpenditureInSpecificCategoryDoesNotExistException("Expenditure not found"));
 
         CategoryDTO categoryDto = categoryService.getById(categoryId, userId);
-        Objects.requireNonNull(expenditure, "Can not find category");
 
         expenditure.setCategory(categoryMapper.mapToEntity(categoryDto));
         expenditureRepository.save(expenditure);

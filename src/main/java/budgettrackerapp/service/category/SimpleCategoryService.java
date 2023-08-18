@@ -35,7 +35,7 @@ public class SimpleCategoryService implements CategoryService {
     @Override
     public CategoryDTO create(CategoryDTO categoryDto, Long userId) {
         Objects.requireNonNull(categoryDto.getName(), "Please, provide a name for your category!");
-        Objects.requireNonNull(userId, "User Id must be provided to create category!"); // питання тут
+        Objects.requireNonNull(userId, "userId must be provided to create category!");
         User user = userRepository.findById(userId).orElseThrow(() -> new UserDoesNotExistException("User not found!"));
         categoryDto.setUserId(user.getId());
 
@@ -62,7 +62,8 @@ public class SimpleCategoryService implements CategoryService {
         Objects.requireNonNull(categoryId, "Wrong parameter passed - pass categoryId!");
         Objects.requireNonNull(userId, "Wrong parameter passed - pass userId!");
 
-        CategoryDTO categoryDto = categoryMapper.mapToDto(categoryRepository.findByIdAndUserId(categoryId, userId).get());
+        CategoryDTO categoryDto = categoryMapper.mapToDto(categoryRepository.findByIdAndUserId(categoryId, userId).orElseThrow(() ->
+                new CategoryDoesNotExistException("Category not found")));
         if (categoryDto == null) {
             throw new CategoryDoesNotExistException(String.format("Category: [%s] does not exist!", categoryDto.getName()));
         }

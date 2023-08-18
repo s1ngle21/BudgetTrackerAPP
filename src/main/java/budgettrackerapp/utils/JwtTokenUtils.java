@@ -1,12 +1,11 @@
 package budgettrackerapp.utils;
 
-import budgettrackerapp.entity.Role;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -26,13 +25,15 @@ public class JwtTokenUtils {
     @Value(value = "${jwt.lifetime}")
     private Duration jwtLifetime;
 
+    private static final String ROLES_CLAIMS_KEY = "roles";
+
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        claims.put("roles", roles);
+        claims.put(ROLES_CLAIMS_KEY, roles);
 
 
         Date issuedDate = new Date();
@@ -51,7 +52,13 @@ public class JwtTokenUtils {
     }
 
     public List<String> getRoles(String token) {
-        return getClaimsFromToken(token).get("roles", List.class);
+        return getClaimsFromToken(token).get(ROLES_CLAIMS_KEY, List.class);
+    }
+
+    public List<SimpleGrantedAuthority> getAuthorityRoles(String token) {
+        return getRoles(token).stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     private Claims getClaimsFromToken(String token) {

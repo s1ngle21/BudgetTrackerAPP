@@ -1,6 +1,5 @@
 package budgettrackerapp.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // питання тут
+@Table(name = "user")
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class User implements UserDetails {
     private List<Category> categories;
 
     @ElementCollection
-    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "user_id"))
     private List<Role> roles;
 
     @Override

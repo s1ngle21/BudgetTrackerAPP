@@ -7,7 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 @Embeddable
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class Role implements GrantedAuthority {
@@ -17,5 +18,9 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return this.role;
+    }
+
+    public static Role getDefault() {
+        return new Role("User");
     }
 }

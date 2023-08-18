@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SimpleAuthorizationService implements AuthorizationService {
 
-    private AuthenticationManager authenticationManager;
     private UserDetailsService userDetailsService;
     private JwtTokenUtils jwtTokenUtils;
     private UserService userService;
@@ -31,13 +30,6 @@ public class SimpleAuthorizationService implements AuthorizationService {
 
     @Override
     public TokenResponse signIn(AuthRequest registrationRequest) {
-        /*try {
-           authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                   registrationRequest.getUsername(), registrationRequest.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Wrong username or password");
-        }*/ //to remove
-
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(registrationRequest.getUsername());
             String token = jwtTokenUtils.generateToken(userDetails);
