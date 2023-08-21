@@ -1,0 +1,47 @@
+package budgettrackerapp.controller;
+
+import budgettrackerapp.dto.CategoryDTO;
+import budgettrackerapp.dto.CategoryDateInfoDTO;
+import budgettrackerapp.service.category.CategoryService;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@AllArgsConstructor
+@RequestMapping("/categories")
+public class CategoryController {
+
+    private CategoryService categoryService;
+
+    @PostMapping
+    public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDto) {
+        return ResponseEntity
+                .ok(categoryService.create(categoryDto, categoryDto.getUserId()));
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<Page<CategoryDTO>> getAll(@PathVariable Long userId,
+                                                    @RequestParam(defaultValue = "0") int pageNumber,
+                                                    @RequestParam(defaultValue = "10") int pageSize) {
+        return ResponseEntity
+                .ok(categoryService.getAll(userId, pageNumber, pageSize));
+    }
+
+    @DeleteMapping("/{id}/users/{userId}")
+    public ResponseEntity<String> delete(@PathVariable Long id,
+                                         @PathVariable Long userId) {
+        categoryService.delete(id, userId);
+        return ResponseEntity
+                .ok("Category has been deleted");
+    }
+
+    @GetMapping("/{categoryId}/users/{userId}")
+    public ResponseEntity<CategoryDTO> getByIdAndSortedByDate(@RequestBody CategoryDateInfoDTO categoryDateInfoDto) {
+        return ResponseEntity
+                .ok(categoryService.getByIdAndSortedByDate(categoryDateInfoDto));
+    }
+
+
+}

@@ -1,0 +1,6 @@
+BTS - Budget Tracker System
+BTS1: Thrown when specific category does not exist.
+BTS2: Thrown when expenditure does not exist in specific category.
+BTS3: Thrown during registration when username or password field is empty.
+BTS4: Thrown when specific user does not exist.
+BTS5: Thrown when user with given username already exist.

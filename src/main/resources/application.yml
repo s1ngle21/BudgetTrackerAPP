@@ -1,0 +1,23 @@
+jwt:
+  secret: 76jr78jh6agegej56vhst456sf
+  lifetime: 600000
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/budgetTrackerAppDb
+    username: postgres
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+
+
